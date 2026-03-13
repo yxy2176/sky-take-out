@@ -27,12 +27,16 @@ import java.util.Map;
 public class EmployeeController {
 
     @Autowired
+    // 员工业务层接口，负责处理员工登录的核心业务逻辑（比如查询数据库、密码校验等）
     private EmployeeService employeeService;
     @Autowired
+    // JWT相关的配置类（对应项目里的配置文件）
+    // 用于读取JWT的密钥、过期时间等配置（例如admin.secret-key、admin.ttl），避免硬编码 -> 便于配置修改
     private JwtProperties jwtProperties;
 
     /**
-     * 登录
+     * 员工登录接口
+     * 负责处理管理员端员工的登录请求
      *
      * @param employeeLoginDTO
      * @return
