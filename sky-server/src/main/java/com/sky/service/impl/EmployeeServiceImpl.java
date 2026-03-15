@@ -1,16 +1,20 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -89,6 +94,31 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.insert(employee); // 后续步骤定义
+    }
+
+    /**
+     * 员工分页查询
+     * @param employeePageQueryDTO
+     * @return
+     */
+    public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO){
+        // 开始分页查询
+        // PageHelper利用了ThreadLocal机制，它会将分页参数存放在当前线程中。
+        // 当Mybatis执行SQL时，插件会拦截SQL，自动在末尾加上 limit, ?, ?语句。
+        // => 这种方式是非侵入式的，也就不需要在SQL语句中手动写复杂的limit计算逻辑，代码非常简洁。
+        PageHelper.startPage(employeePageQueryDTO.getPage(),
+                employeePageQueryDTO.getPageSize());
+        // 调用 Mapper 层执行真正的数据库查询
+        // 虽然 employeeMapper.pageQuery 在接口中定义返回的是 Page<Employee>，
+        // 但其实际运行结果已经被PageHelper 拦截并处理过了。
+        // 返回的 page 对象不仅包含当前页的数据列表，还包含了总记录数等统计信息。
+        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
+
+        long total = page.getTotal();
+        List<Employee> records = page.getResult();
+
+        return new PageResult(total,records);
+
     }
 
 }
