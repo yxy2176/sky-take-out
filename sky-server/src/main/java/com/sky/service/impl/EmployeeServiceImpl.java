@@ -44,7 +44,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
+        // 得先进行md5加密，然后再进行比对
+        // 用户明文密码 → 转字节 (MD5 加密算法只能处理字节) → MD5 加密(MD5 不可逆加密算法) → 生成 32 位密文 → 覆盖原密码
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
         if (!password.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);

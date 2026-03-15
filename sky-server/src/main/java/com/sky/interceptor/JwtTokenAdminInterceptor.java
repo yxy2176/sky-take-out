@@ -1,6 +1,7 @@
 package com.sky.interceptor;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.context.BaseContext;
 import com.sky.properties.JwtProperties;
 import com.sky.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * jwt令牌校验的拦截器
+ * 作用：在请求到达真正的业务代码（Controller）之前，先检查用户是否已经登录（即令牌是否有效）
  */
 @Component
 @Slf4j
@@ -47,6 +49,10 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
             Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
             log.info("当前员工id：", empId);
+
+            //将用户id存储到ThreadLocal里
+//            BaseContext.setCurrentId(empId);
+
             //3、通过，放行
             return true;
         } catch (Exception ex) {
