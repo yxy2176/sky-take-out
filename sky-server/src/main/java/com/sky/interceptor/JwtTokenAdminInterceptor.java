@@ -50,8 +50,8 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
             log.info("当前员工id：", empId);
 
-            //将用户id存储到ThreadLocal里
-//            BaseContext.setCurrentId(empId);
+            //将用户id存储到 ThreadLocal 里
+            BaseContext.setCurrentId(empId);
 
             //3、通过，放行
             return true;
