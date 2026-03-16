@@ -106,4 +106,16 @@ public class EmployeeController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 启动 / 禁用员工账户
+     * @param status 账户状态
+     * @param id 员工id
+     * @return
+     */
+    public Result startOrStop(@PathVariable Integer status, Long id){
+        log.info("启动禁用员工帐号：{},{}",status,id);
+        employeeService.startOrStop(status,id);
+        return Result.success();
+    }
+
 }
