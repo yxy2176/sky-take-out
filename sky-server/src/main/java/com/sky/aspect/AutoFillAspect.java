@@ -25,16 +25,17 @@ public class AutoFillAspect {
      * com.sky.mapper包下包含AutoFill注解的所有类和方法
      */
     @Pointcut("execution(* com.sky.mapper.*.*(..)) && @annotation(com.sky" +
-            ".annotation.AutoFill")
+            ".annotation.AutoFill)")
     public void autoFillPointCut() {
-
+        // 这个方法通常是空的，它存在的唯一目的就是给上面的“长串规则”起个名字
     }
 
     /**
      * 前置通知，在通知中进行公共字段的赋值
      */
-    @Before("autoFillPointCut()")
+    @Before("autoFillPointCut()") // 这里的名字必须和上面方法名一模一样
     public void autoFill(JoinPoint joinPoint) {
+        // 具体干活的代码
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 
         AutoFill autoFill = signature.getMethod().getAnnotation(AutoFill.class);
